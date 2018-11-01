@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html>
+
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>EasyWeb</title>
+    <link rel="stylesheet" href="../static/plugins/layui/css/layui.css" th:href="@{/plugins/layui/css/layui.css}"/>
+    <link rel="stylesheet" href="../static/plugins/select2/css/select2.min.css" th:href="@{/plugins/select2/css/select2.min.css}"/>
+
+</head>
+<body class="layui-layout-body" style="margin-top: 20px; padding-left: 20px; padding-right: 20px;">
+
+	<fieldset class="layui-elem-field layui-bg-gray">
+  	  <div class="layui-field-box">展台信息 </div>
+	</fieldset>
+        
+	<div class="layui-form-item">
+			<div class="layui-row">
+				<div class="layui-col-md4">
+					<label class="layui-form-label">展台编号</label>
+					<div class="layui-form-label">
+						<output name="name" class="layui-output"  th:text="${exhibitionBooth.code}"></output>
+					</div>
+				</div>
+				<div class="layui-col-md4">
+					<label class="layui-form-label">展台位置</label>
+					<div class="layui-form-label">
+						<output name="name" class="layui-output"  th:text="${exhibitionBooth.position.displayName}"></output>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<div class="layui-row">
+				<div class="layui-col-md6">
+					<label class="layui-form-label">展台图片</label>
+					<img class="layui-upload-img" width="100px" height="80px" th:src="${exhibitionBooth.pictureAddr}" th:if="${exhibitionBooth.pictureAddr} !=null and ${exhibitionBooth.pictureAddr} != ''"/>	
+				</div>
+			</div>
+		</div>
+
+		<div class="layui-form-item model-form-footer"
+			style="text-align: center;">
+			<button class="layui-btn" type="button"
+				id="btnCancel" onclick="parent.location.reload()">关闭</button>
+		</div>
+
+<script type="text/javascript" src="../static/plugins/jquery/jquery/jquery-3.2.1.min.js" th:src="@{/plugins/jquery/jquery-3.2.1.min.js}"></script>
+<script type="text/javascript" src="../static/plugins/layui/layui.all.js" th:src="@{/plugins/layui/layui.all.js}"></script>
+<script type="text/javascript" src="../static/plugins/select2/js/select2.min.js" th:src="@{/plugins/select2/js/select2.min.js}"></script>
+<script type="text/javascript" src="../static/js/common/common.js" th:src="@{/js/common/common.js}"></script>
+
+</body>
+</html>

@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <title>地图导航</title>
+    <style type="text/css">
+        html{height:100%}
+        body{height:100%;margin:0px;padding:0px}
+        #container{height:100%}
+        #chose-way{
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background-color: white;
+            padding-left: 10px;
+            border-color: black;
+            border-radius: 5px;
+            border: 1px solid #e0e0d4;
+        }
+
+        .chose-way-titme{
+            border-bottom: 1px dashed black;
+            line-height: 30px;
+            margin: 11px;
+        }
+
+        .tab-item{
+            margin: 5px;
+        }
+        .tab-item>img{
+            height: 20px;
+            width: 20px;
+        }
+        .tab-item>span{
+            vertical-align: top;
+            margin-left: 3px;
+        }
+
+        #r-s{
+            position: absolute;
+            bottom: 20px;
+            height: 30px;
+            left: auto;
+            right: auto;
+            text-align: center;
+            width: 100%;
+        }
+
+        .navigationBtn{
+            width: 100px;
+            height: 30px;
+            background-color: green;
+            margin-left: auto;
+            margin-right: auto;
+            border-radius: 5px;
+            line-height: 30px;
+            font-size: 16px;
+            font-weight: 800;
+            color: white;
+        }
+
+        .map-chose{
+            position: absolute;
+            bottom: 50px;
+            width: 100%;
+            left: auto;
+            right: auto;
+            text-align: center;
+            display: none;
+        }
+
+        .map-items{
+            width: 200px;
+            border: 1px solid #ddded8;
+            margin-left: auto;
+            margin-right: auto;
+            background-color: white;
+            border-radius: 5px;
+            padding: 10px 5px;
+            display: inline-block;
+        }
+
+        .baiduMap{
+            width: 49%;
+            float: left;
+            border-right: 1px solid #dadcdb;
+        }
+
+        .gaodeMap{
+            width: 49%;
+            float: left;
+            height: 25px;
+        }
+
+        .broswer-not-support{
+            position: absolute;
+            bottom: 60px;
+            width: 100%;
+            left: auto;
+            right: auto;
+            text-align: center;
+            display: none;
+        }
+        .notice-items{
+            border: 1px solid #ddded8;
+            background-color: white;
+            border-radius: 5px;
+            padding: 10px 5px;
+            display: inline-block;
+        }
+    </style>
+    <script type="text/javascript" src="../static/plugins/jquery/jquery-3.2.1.min.js" th:src="@{/plugins/jquery/jquery-3.2.1.min.js}"></script>
+    <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=9aIxr4TMdqpCZrKvxFob6tmsum1qnrTX"></script>
+    <script type="text/javascript" src="http://webapi.amap.com/maps?v=1.4.5&key=09162bf1f0cdf64a9257501d6399d2b6&plugin=AMap.ToolBar"></script>
+</head>
+<body>
+<input type="hidden" id="startLng" th:value="${startLng}">
+<input type="hidden" id="startLat" th:value="${startLat}">
+<input type="hidden" id="endLng" th:value="${endLng}">
+<input type="hidden" id="endLat" th:value="${endLat}">
+<div id="container"></div>
+<div id="mapContainer" ></div>
+<div class='center'>
+    <div id='bt1' class="btmtip">点击去高德地图</div>
+</div>
+<div class="panel" id='bitmap' style='top:15px'>
+    <img src="http://a.amap.com/lbs/static/img/js-drivingonapp.png" style='width:120px;height:120px'>
+    <div class='qrcodetxt' style='text-align: center'>手机扫码打开demo</div>
+</div>
+<div id="chose-way">
+    <div class="chose-way-titme">出行方式选择</div>
+    <div class="tab-item bus-tab" data-index="bus" id="bus"><img src="/images/bus.png" th:src="@{/images/bus.png}"><span>公交</span></div>
+    <div class="tab-item drive-tab" data-index="drive" id="drive"><img src="/images/driving.png" th:src="@{/images/driving.png}"><span>驾车</span></div>
+    <div class="tab-item walk-tab" data-index="walk" id="walk"><img src="/images/walk.png" th:src="@{/images/walk.png}"><span>步行</span></div>
+
+</div>
+
+<div class="map-chose">
+    <div class="map-items">
+        <div class="baiduMap"><a  href="javascript:openBaidu(0);" >百度地图打开</a></div>
+        <div class="gaodeMap"><a id="bt"href="javascript:void(0)">高德地图打开</a></div>
+    </div>
+</div>
+<div class="broswer-not-support">
+    <div class="notice-items">
+       您当前使用的浏览器不支持打开手机地图，请点击右上方的"...", 然后现在浏览器打开！
+    </div>
+</div>
+<div id="r-s" style="position: absolute; left: 5px; bottom: 20px;">
+    <div class="navigationBtn" >地图导航</div>
+   <!-- <a href="baidumap://map/direction?origin=26.650786,106.652730&destination=26.655163,106.658685&mode=driving">百度地图打开</a>
+    <a href="iosamap://navi?sourceApplication=usc&backScheme=myapp&poiname=目的地&poiid=BGVIS&lat=26.650786,106.652730&lon=26.655163,106.658685&dev=0&style=2">百度地图打开</a>-->
+</div>
+<!--<form id="gotobaiduform" action="http://api.map.baidu.com/direction" target="_blank" method="get">-->
+    <!--<input type="hidden" value="26.650786,106.652730" name="origin">-->
+    <!--<input type="hidden" value="html" name="output">-->
+    <!--<input type="hidden" value="driving" name="mode">-->
+    <!--<input type="hidden" value="106.62367,26.653442" name="destination">-->
+<!--</form>-->
+</body>
+<script type="text/javascript">
+    debugger;
+    var startLng = $("#startLng").val();
+    var startLat = $("#startLat").val();
+    var endLng = $("#endLng").val();
+    var endLat = $("#endLat").val();
+    var map = new BMap.Map("container"); // 百度地图
+    map.centerAndZoom(new BMap.Point(106.645832,26.641782), 11);
+    map.enableDragging();
+    var way = "walk";
+    var s_ = new BMap.Point(parseFloat(startLng), parseFloat(startLat));
+    var e_ = new BMap.Point(parseFloat(endLng), parseFloat(endLat));
+    var walk;
+    var driving;
+    var transit;
+    map.addEventListener("click", function(){
+        $(".map-chose").css("display", "none");
+        $(".broswer-not-support").css("display", "none");
+    });
+
+    var distance = map.getDistance(s_, e_).toFixed(2);
+    if(distance > 500) { // 如果起点距离终点小于500米， 默认显示步行导航
+        way = "walking";
+        walk = new BMap.WalkingRoute(map, {
+            renderOptions: {map: map}
+        });
+        walk.search(s_, e_);
+    }else{
+        way = "driving";
+        driving = new BMap.DrivingRoute(map, {renderOptions: {map: map, panel: "r-result", autoViewport: true}});
+        driving.search(s_, e_);
+    }
+
+
+    $("#bus").click(function(){
+        way = "transit";
+        map.clearOverlays();
+
+        var transit = new BMap.TransitRoute(map, {
+            renderOptions: {map: map}
+        });
+        transit.search(s_, e_);
+    });
+
+    $("#drive").click(function(){
+        way = "driving";
+        map.clearOverlays();
+        driving = new BMap.DrivingRoute(map, {renderOptions: {map: map, panel: "r-result", autoViewport: true}});
+        driving.search(s_, e_);
+    });
+
+    $("#walk").click(function(){
+        way = "walking";
+        map.clearOverlays();
+        walk = new BMap.WalkingRoute(map, {
+            renderOptions: {map: map}
+        });
+        walk.search(s_, e_);
+    });
+
+    $("#r-s").on('click', 'a', function(e){
+        var href = $(this).attr('href');
+        window.location.href = href;
+    })
+
+    //判断是否微信登陆
+    function isWeiXin() {
+        var ua = window.navigator.userAgent.toLowerCase();
+        console.log(ua);//mozilla/5.0 (iphone; cpu iphone os 9_1 like mac os x) applewebkit/601.1.46 (khtml, like gecko)version/9.0 mobile/13b143 safari/601.1
+        if (ua.match(/MicroMessenger/i) == 'micromessenger') {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    $(".navigationBtn").click(function(){
+        if(isWeiXin()){
+            $(".broswer-not-support").css("display", "block");
+        }else{
+            $(".map-chose").css("display", "block");
+        }
+    });
+
+    function openBaidu(e){
+/*        var ifr = document.createElement('iframe');
+        ifr.src = 'baidumap://map/direction?origin=' + start + '&destination=' + end + '&mode=' + way;
+        ifr.style.display = 'none';
+
+        document.body.appendChild(ifr);
+        setTimeout(function(){
+            document.body.removeChild(ifr);
+        }, 3000);*/
+        alert('baidumap://map/direction?origin=' + startLat + ',' + startLng + '&destination=' + endLat + ',' + endLng + '&mode=' + way);
+        location.href = 'baidumap://map/direction?origin=' + startLat + ',' + startLng + '&destination=' + endLat + ',' + endLng + '&mode=' + way;
+        var t = Date.now();
+
+        setTimeout(function(){
+            if (Date.now() - t < 1200) {
+                if(systemCheck() == 'android'){
+                    location.href = 'http://boscdn.bpc.baidu.com/map-mobile-lbsapp/map/BaiduMaps_Android_10-6-5_1009176a.apk';
+                }else{
+                    location.href = '#';
+                }
+
+            }
+        }, 1000);
+
+        return false;
+    }
+
+    function systemCheck() {
+        var u = navigator.userAgent, app = navigator.appVersion;
+        var isAndroid = u.indexOf('Android') > -1 || u.indexOf('Linux') > -1; //g
+        var isIOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
+        if (isAndroid) {
+            return 'android';
+        }
+        if (isIOS) {
+            return 'ios';
+        }
+    }
+</script>
+</html>
+
+<!--
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
+    <title></title>
+    <style>
+        body,#mapContainer{
+            margin:0;
+            height:100%;
+            width:100%;
+            text-align: center;
+            font-size:12px;
+        }
+        .panel{
+            position: absolute;
+            top:15px;
+            right: 15px;
+        }
+        .qrcodetxt{
+            background-color: #0D9BF2;
+            padding: 6px;
+            color: white;
+        }
+        .center{
+            position: absolute;
+            width: 100%;
+            bottom: 24px;
+        }
+        .btmtip {
+            cursor: pointer;
+            border-radius: 5px;
+            background-color: #0D9BF2;
+            padding: 6px;
+            width: 160px;
+            color: white;
+            margin: 0 auto;
+        }
+    </style>
+    <link rel="stylesheet" href="http://cache.amap.com/lbs/static/main.css?v=1.0?v=1.0" />
+    <script type="text/javascript" src="http://webapi.amap.com/maps?v=1.4.5&key=09162bf1f0cdf64a9257501d6399d2b6&plugin=AMap.ToolBar"></script>
+    <script>
+        function init() {
+            var button = document.getElementById('bt');
+            map = new AMap.Map("mapContainer");
+            AMap.plugin(["AMap.Driving"], function() {
+                var drivingOption = {
+                    policy:AMap.DrivingPolicy.LEAST_TIME,
+                    map:map
+                };
+                var driving = new AMap.Driving(drivingOption); //构造驾车导航类
+                button.onclick = function(){
+                    driving.searchOnAMAP({
+                        origin:[26.650786,106.652730],
+                        destination:[26.655163,106.658685]
+                    });
+                }
+
+            });
+            map.addControl(new AMap.ToolBar());
+            if(AMap.UA.mobile){
+                document.getElementById('bitmap').style.display='none';
+                bt.style.fontSize = '16px';
+            }else{
+                bt.style.marginRight = '10px';
+            }
+        }
+    </script>
+</head>
+<body onload="init()">
+<div id="mapContainer" ></div>
+<div class='center'>
+    <div id='bt' class="btmtip">点击去高德地图</div>
+</div>
+<div class="panel" id='bitmap' style='top:15px'>
+    <img src="http://a.amap.com/lbs/static/img/js-drivingonapp.png" style='width:120px;height:120px'>
+    <div class='qrcodetxt' style='text-align: center'>手机扫码打开demo</div>
+</div>
+</body>
+</html>-->

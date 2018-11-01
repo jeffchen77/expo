@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html>
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>EasyWeb</title>
+    <link rel="stylesheet" href="../static/plugins/layui/css/layui.css" th:href="@{/plugins/layui/css/layui.css}"/>
+    <link rel="stylesheet" href="../static/plugins/select2/css/select2.min.css" th:href="@{/plugins/select2/css/select2.min.css}"/>
+
+</head>
+<body class="layui-layout-body" style="margin-top: 20px; padding-left: 20px; padding-right: 20px;">
+	
+	<div style="height:550px;overflow-y:auto;padding-bottom:30px;">
+	<fieldset class="layui-elem-field layui-bg-gray">
+  	  <div class="layui-field-box">会议信息 </div>
+	</fieldset>
+        
+	<form id="editForm" class="layui-form model-form" action="" >
+	<input name="id" type="hidden" id="id" th:value="${meeting.id}"/>
+        <div class="layui-form-item">
+        <div class="layui-row">
+        <div class="layui-col-md7">
+        	<div class="layui-form-item">
+        	<div class="layui-row">
+        	<div class="layui-col-md12">
+            <label class="layui-form-label">主题</label>
+            <div class="layui-input-block">
+                <input name="theme" id="theme" type="text" autocomplete="off" class="layui-input" lay-verify="required"  maxlength="50" th:value="${meeting.theme}"/>
+            </div>
+            </div>
+            </div>
+            </div>
+            <div class="layui-form-item">
+            <div class="layui-row">
+            <div class="layui-col-md12">
+			<label class="layui-form-label">会议类别</label>
+            <div class="layui-input-block">
+                 <select id="meeting-select" name="typeDic" lay-verify="required" lay-filter="meetingSelect" lay-search>
+                 <option value=''>-请选择-</option>
+                 <optgroup th:each="dic:${diclist}" th:label="${dic.displayName}">
+                 	<option th:each="subdic:${dic.dicList}" th:value="${subdic.id}" th:text="${subdic.displayName }" th:selected="${meeting.typeDic eq null}? false:${subdic.id==meeting.typeDic.id}"></option>
+                 </optgroup>                 
+                 </select>
+            </div>
+        	 </div>
+            </div>
+            </div>
+            <div class="layui-form-item">
+            <div class="layui-row">
+            <div class="layui-col-md12">
+			<label class="layui-form-label">人员规模</label>
+            <div class="layui-input-block">
+                <input name="totalPeople" id="totalPeople" type="text" autocomplete="off" class="layui-input" maxlength="50" th:value="${meeting.totalPeople}"/>
+            </div>
+        	 </div>
+            </div>
+            </div>
+            <div class="layui-form-item">
+            <div class="layui-row">
+            <div class="layui-col-md12">
+			<label class="layui-form-label">会议时间</label>
+            <div class="layui-input-block">
+                <input name="rang" id="rang" placeholder="请选择时间范围" type="text" lay-verify="required" autocomplete="off" class="layui-input" readonly th:value="${meeting.rang}"/>
+            </div>
+        	</div>
+            </div>
+            </div>
+            <div class="layui-form-item">
+            <div class="layui-row">
+            <div class="layui-col-md12">
+	            <label class="layui-form-label">活动地点</label>
+	            <div class="layui-input-inline">
+	                <select id="location-select" name="locationType" lay-filter="locationSelect" >
+	                 	<option value=''>-请选择-</option>
+	                    <option value="0" th:selected="${meeting.locationType=='0'}">展馆</option>
+	                    <option value="1" th:selected="${meeting.locationType=='1'}">会场</option>
+	                </select>
+				</div>
+				<div th:class="${meeting.locationType eq '0'}  or ${meeting.locationType eq ''} or ${meeting.locationType eq null}? 'layui-input-inline layui-show':'layui-input-inline layui-hide'" id="pavilition-div">
+			      <select id="pavilion-select" name="pavilionDic" lay-filter="pavilionSelect" lay-search>
+			      <option value=''>-请选择-</option>
+			       <option  th:each="pav:${pavlist}" th:value="${pav.id}" th:text="${pav.displayName }" th:selected="${meeting.pavilionDic eq null}? false:${pav.id==meeting.pavilionDic.id}"></option>
+			      </select>
+			    </div>
+			    <div th:class="${meeting.locationType eq '0'} or ${meeting.locationType eq ''} or ${meeting.locationType eq null}? 'layui-input-inline layui-show':'layui-input-inline layui-hide'" id="booth-div">
+			      <select id="booth-select" name="booth" lay-search>
+			      <option value=''>-请选择-</option>
+			      <option  th:each="booth:${boothlist}" th:value="${booth.id}" th:text="${booth.code }" th:selected="${meeting.booth eq null}? false:${booth.id==meeting.booth.id}"></option>
+			      </select>
+			    </div>
+			    <div th:class="${meeting.locationType eq '1'}? 'layui-input-inline layui-show':'layui-input-inline layui-hide'" id="exhibition-div">
+			      <select id="exhibition-select" name="exhibition" lay-filter="exhibitionSelect" lay-search>
+			      <option value=''>-请选择-</option>
+			      <option  th:each="exh:${exhlist}" th:value="${exh.id}" th:text="${exh.name }" th:selected="${meeting.exhibition eq null}? false:${exh.id==meeting.exhibition.id}"></option>
+			      </select>
+			    </div>
+			    <div th:class="${meeting.locationType eq '1'}? 'layui-input-inline layui-show':'layui-input-inline layui-hide'" id="exhibitionhall-div">
+			      <select id="exhibitionhall-select" name="exhibitionHall" lay-search>
+			      <option value=''>-请选择-</option>
+			      <option  th:each="hall:${halllist}" th:value="${hall.id}" th:text="${hall.name }" th:selected="${meeting.exhibitionHall eq null}? false:${hall.id==meeting.exhibitionHall.id}"></option>
+			      </select>
+			    </div>			
+        	 </div> 
+            </div>
+            </div>
+        </div> 
+        
+			<div class="layui-col-md5">
+			<label class="layui-form-label">会议介绍</label>
+            <div class="layui-input-block">
+                <textarea name="description" id="meeting-description"  autocomplete="off" class="layui-textarea" lay-verify="description" th:text="${meeting.description}"></textarea>
+            </div>
+         	</div>  
+         </div>
+        </div>
+       
+       <fieldset class="layui-elem-field layui-bg-gray">
+	  	  <div class="layui-field-box">参会人员信息 </div>
+		</fieldset>
+		 <div class="layui-form-item" style="padding-left: 10px; padding-right: 10px;">
+			  <div class="layui-table-header">
+	                   <div class="layui-row" style="margin-top: 10px;">
+	                    	<div class="layui-col-md2">
+	                    	 	<span class="layui-input-block">序号</span>		                       
+	                        </div>
+	                        <div class="layui-col-md2">
+	                    	 	<span class="layui-input-block">姓名</span>		                       
+	                        </div>
+	                        <div class="layui-col-md3">
+	                    	 	<span class="layui-input-block">代表企业</span>		                       
+	                        </div>
+	                        <div class="layui-col-md3">
+	                    	 	<span class="layui-input-block">职务</span>		                       
+	                        </div>
+	                        <div class="layui-col-md1 layui-input-block">
+	                    	 	<span class="layui-input-block"></span>		                       
+	                        </div>
+	                    </div>
+	        </div>
+	        </div>
+	    <div class="layui-form-item" style="padding-left: 10px; padding-right: 10px;">
+	        <div class="layui-table-main"  id="ligthContent">
+	       	 <div class="layui-row layui-guest" style="margin-top: 10px;" th:each="guest,guestStat: ${meeting.guests}">	         
+                    <div class="layui-col-md2">
+                            <div class="layui-input-block" style="padding-top:10px" th:text="${guestStat.index+1}"></div>
+                     </div>
+                      <div class="layui-col-md2">
+                            <div class="layui-input-block layui-name">
+							<select id="guest-select" name="guestArr[]" lay-filter="guestsSelect" lay-search>
+							<option value="">-请选择-</option>
+   							 <option  th:each="gu:${guestlist}" th:value="${gu.id}" th:attr="data-ent=${gu.enterprise eq null? ' ':gu.enterprise.name},data-pos=${gu.position}" th:text="${gu.name }" th:selected="${guest eq null}? false:${gu.id==guest.id}"></option>
+							<option value='GUE'>前往嘉宾库进行设置</option>                           
+							</select>
+							<a href="javascript:;" data-url="/management/config/guest/list" class="layui-hide" id="addGuestBtn">
+                             <cite>嘉宾库</cite>
+         		           </a>				
+							</div>
+                      </div>
+                      <div class="layui-col-md3">
+                            <div class="layui-input-block layui-ent" style="padding-top:10px" th:text="${guest.enterprise==null?'':guest.enterprise.name}"></div>
+                       </div>
+                       <div class="layui-col-md3">
+                            <div class="layui-input-block layui-pos" style="padding-top:10px" th:text="${guest.position}"></div>
+                       </div>
+                       <div class="layui-col-md1" align="center">  
+                       		<div class="layui-input-block" style="padding-top:10px">                           
+                                <a href="javascript:;" onclick="delIconClick(this)" class="layui-btn layui-btn-xs" lay-event="delete">删除</a>
+                             </div>
+                        </div>             
+         	</div>
+       		 </div>
+		 </div>
+		 <div class="layui-form-item model-form-footer" style="text-align:center;">
+        	<i onclick="addIconClick()" class="layui-icon" style="font-size: 35px;">&#xe608;</i>           
+        </div>
+        <div class="layui-form-item model-form-footer" style="text-align:center;">
+        	<button class="layui-btn" id="btnSubmit" lay-filter="btnSubmit" lay-submit>保存</button>
+            <button class="layui-btn layui-btn-primary" type="button" id="btnCancel">取消</button>            
+        </div>
+    </form>
+
+	</div>
+	<script type="text/html" id="contenGuest">
+		<div class="layui-row layui-guest" style="margin-top: 10px;">	         
+                    <div class="layui-col-md2">
+                            <div class="layui-input-block">{{d.id}}</div>
+                     </div>
+                      <div class="layui-col-md2">
+                            <div class="layui-input-block layui-name">
+							<select id="guest-select" name="guestArr[]" lay-filter="guestsSelect" lay-search>
+							<option value="">-请选择-</option>
+   							 {{#  layui.each(d.guestls, function(index, item){ }}
+    						<option value="{{ item.id }}" data-ent="{{item.enterprise==null?'':item.enterprise.name}}" data-pos="{{item.position}}">{{ item.name }}</option>
+    						{{#  }); }}
+							</select>
+							
+							</div>
+                      </div>
+                      <div class="layui-col-md3">
+                            <div class="layui-input-block layui-ent">-</div>
+                       </div>
+                       <div class="layui-col-md3">
+                            <div class="layui-input-block layui-pos">-</div>
+                       </div>
+                       <div class="layui-col-md1" align="center">  
+                       		<div class="layui-input-block">                           
+                                <a href="javascript:;" onclick="delIconClick(this)" class="layui-btn layui-btn-xs" lay-event="delete">删除</a>
+                             </div>
+                        </div>             
+         </div>
+	</script>
+<script type="text/javascript" src="../static/plugins/jquery/jquery/jquery-3.2.1.min.js" th:src="@{/plugins/jquery/jquery-3.2.1.min.js}"></script>
+<script type="text/javascript" src="../static/plugins/layui/layui.all.js" th:src="@{/plugins/layui/layui.all.js}"></script>
+<script type="text/javascript" src="../static/plugins/select2/js/select2.min.js" th:src="@{/plugins/select2/js/select2.min.js}"></script>
+<script type="text/javascript" src="../static/js/common/common.js" th:src="@{/js/common/common.js}"></script>
+<script type="text/javascript" src="../../static/js/management/dialogue/meeting/expo.meeting.add.js" th:src="@{/js/management/dialogue/meeting/expo.meeting.add.js}"></script>
+
+</body>
+</html>

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html>
+
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>EasyWeb</title>
+    <link rel="stylesheet" href="../static/plugins/layui/css/layui.css" th:href="@{/plugins/layui/css/layui.css}"/>
+    <link rel="stylesheet" href="../static/plugins/select2/css/select2.min.css" th:href="@{/plugins/select2/css/select2.min.css}"/>
+    <link rel="stylesheet" href="../static/css/comment.css" th:href="@{/css/comment.css}"/>
+
+</head>
+
+<body class="layui-layout-body" style="margin-top: 20px; padding-left: 20px; padding-right: 20px;">
+<div style="height:580px;overflow-y:auto;">
+    <div class="layui-form toolbar" style="width: 100%;">
+        <div class="panel col" style="float: left;">
+            <a href="javascript:;" data-url="/management/message/add" class="layui-btn" id="addBtn">
+                <div class="panel_icon">
+                    <i class="layui-icon" data-icon="&#xe654;">&#xe654;</i>
+                    <cite>添加</cite>
+                </div>
+            </a>
+
+        </div>
+
+        <div class="layui-right" style="float: right;">
+            <input id="searchValue" class="layui-input search-input" type="text" placeholder="输入标题" style="width: auto;float: left;"/>
+            <button id="searchBtn" class="layui-btn search-btn"><i class="layui-icon">&#xe615;</i>搜索</button>
+        </div>
+    </div>
+
+    <table class="layui-table" id="table" lay-filter="table"></table>
+</div>
+
+
+<!-- 表格操作列 -->
+<script type="text/html" id="barTpl">
+    <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="look" >查看</a>
+    <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="edit" >修改</a>
+    <a class="layui-btn layui-btn-xs" lay-event="delete">删除</a>
+</script>
+
+<!-- 表格状态列 -->
+<script type="text/html" id="statusTpl">
+    <input type="checkbox" name="isShowScreen" lay-filter="statusCB" value="{{d.id}}" lay-skin="switch" lay-text="展示|不展示" {{ d.isShowScreen == 0 ? 'checked' : '' }}>
+</script>
+
+<!-- 表格状态列 -->
+<script type="text/html" id="statusIndex">
+    <input type="checkbox" name="isShowIndex" lay-filter="statusIndex" value="{{d.id}}" lay-skin="switch" lay-text="展示|不展示" {{ d.isShowIndex == 0 ? 'checked' : '' }}>
+</script>
+
+<!-- 角色select模板 -->
+<script id="rolesSelect" type="text/html">
+    <option value="">-请选择-</option>
+    {{#  layui.each(d, function(index, item){ }}
+    <option value="{{ item.roleId }}">{{ item.roleName }}</option>
+    {{#  }); }}
+</script>
+<script type="text/javascript" src="../static/plugins/jquery/jquery/jquery-3.2.1.min.js" th:src="@{/plugins/jquery/jquery-3.2.1.min.js}"></script>
+<script type="text/javascript" src="../static/plugins/promise/q.js" th:src="@{/plugins/promise/q.js}"></script>
+<script type="text/javascript" src="../static/plugins/layui/layui.all.js" th:src="@{/plugins/layui/layui.all.js}"></script>
+<script type="text/javascript" src="../static/plugins/select2/js/select2.min.js" th:src="@{/plugins/select2/js/select2.min.js}"></script>
+<script type="text/javascript" src="../static/js/comment.js" th:src="@{/js/comment.js}"></script>
+
+<script type="text/javascript" src="../../static/js/management/hotmessage/message/expo.message.list.js" th:src="@{/js/management/hotmessage/message/expo.message.list.js}"></script>
+
+</body>
+
+</html>

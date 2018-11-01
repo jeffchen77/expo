@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html>
+
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta charset="utf-8" />
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>EasyWeb</title>
+<link rel="stylesheet" href="../static/plugins/layui/css/layui.css"
+	th:href="@{/plugins/layui/css/layui.css}" />
+<link rel="stylesheet"
+	href="../static/plugins/select2/css/select2.min.css"
+	th:href="@{/plugins/select2/css/select2.min.css}" />
+</head>
+<body class="layui-layout-body"
+	style="margin-top: 20px; padding-left: 20px; padding-right: 20px;">
+	<div style="height:550px;overflow-y:auto;padding-bottom:30px;">
+	<fieldset class="layui-elem-field layui-bg-gray">
+		<div class="layui-field-box">企业信息</div>
+	</fieldset>
+	<form id="editForm" class="layui-form model-form" action="">
+	<div class="layui-form-item">
+        <div class="layui-row">
+	        <div class="layui-col-md6">
+	        	<div class="layui-row" style="margin-bottom:20px;">
+	        		<div>
+			            <label class="layui-form-label" style="width:100px;">参展企业名称</label>
+			        </div>
+			        <div class="layui-col-md6">
+			            <div class="layui-input-block" style="margin-left:0px;">
+			                <input name="enterpriseName" id="enterpriseName" placeholder="请输入参展企业名称" type="text" autocomplete="off" class="layui-input" maxlength="50" lay-verify="required" />
+			            </div>
+			        </div>
+			    </div>
+			    <div class="layui-row">
+	        		<div>
+			            <label class="layui-form-label" style="width:100px;">参展企业类别</label>
+			        </div>
+			        <div class="layui-col-md6">
+			            <div class="layui-input-block" style="margin-left:0px;">
+			                <select id="enterpriseType" name="enterpriseType"></select>
+			            </div>
+			        </div>
+			    </div>
+	        </div>
+	        <div class="layui-col-md6">
+	        	<div class="layui-row">
+	        		<div class="layui-col-md5">
+			            <label class="layui-form-label">参展企业log</label>
+			            <div class="layui-input-block">
+			                <div class="layui-upload-drag" id="enterPrisePhoto">
+			  					<i class="layui-icon">&#xe654;</i>
+							</div>
+						</div>
+					</div>
+					<div class="layui-col-md6">		
+		            	<input type="hidden" id="enterPriseLog" name="enterPriseLog" autocomplete="off" maxlength="50" />
+						<div class="layui-upload-list layui-hide" id="viewPhoto" >
+							<img class="layui-upload-img" width="120px"
+								height="100px"/>
+							<i class="layui-icon img-del">ဆ</i>
+						</div>
+           			 </div>
+			    </div>
+	        </div>
+        </div>
+    
+    	<div class="layui-row">
+	    	<!-- 企业介绍 -->
+	    	<div class="layui-col-md6">
+		    	<div class="layui-row">
+		        		<div>
+				            <label class="layui-form-label" style="width:100px;">企业介绍</label>
+				        </div>
+				        <div class="layui-col-md8">
+				            <div class="layui-input-block" style="margin-left:0px;">
+				                <textarea name="enterpriseDesc" placeholder="请输入企业描述，最多80字" class="layui-textarea" style="min-height: 130px;" id="enterpriseDesc"></textarea>
+				            </div>
+				        </div>
+				   </div>
+		    </div>
+    	</div>
+    </div>
+    
+	<fieldset class="layui-elem-field layui-bg-gray">
+			<div class="layui-field-box">参展内容</div>
+	</fieldset>
+	
+	<div class="layui-form-item">
+		<div class="layui-row">
+		    <div class="layui-col-md6">
+		    	<div class="layui-row">
+		        		<div>
+				            <label class="layui-form-label" style="width:100px;">展出主题</label>
+				        </div>
+				        <div class="layui-col-md6">
+				            <div class="layui-input-block" style="margin-left:0px;">
+				                <input id="enterpriseTheme" name="enterpriseTheme"
+								placeholder="请输入展出主题" type="text" class="layui-input"
+								autocomplete="off" maxlength="50" />
+				            </div>
+				        </div>
+				    </div>
+		    </div>
+		    <div class="layui-col-md6">
+		    	<div class="layui-row">
+		        		<div>
+				            <label class="layui-form-label" style="width:100px;">展出类别</label>
+				        </div>
+				        <div class="layui-col-md6">
+				            <div class="layui-input-block" style="margin-left:0px;">
+				                <!-- <select id="themeType" name="themeType"></select> -->
+				                <select id="themeType" name="themeType" multiple="multiple" class="downlist">
+								<!-- 	<option value='OnTop' selected>固顶</option>
+									<option value='IsElite'>推荐</option>
+									<option value='IsHot'>热门</option> -->
+								</select>
+				            </div>
+				        </div>
+				</div>
+		    </div>
+		</div>
+	</div>
+	
+	<div class="layui-form-item">
+		<div class="layui-row">
+		    <div class="layui-col-md12">
+		    	<div class="layui-row">
+		        	<div>
+				       	<label class="layui-form-label" style="width:100px;">展出亮点</label>
+				    </div>
+				    <div class="layui-col-md6" id="ligthContent">
+				    	<!-- <div class="layui-row"  style="margin-bottom:5px;">
+				    		<div class="layui-col-md6">
+					            <div class="layui-input-block" style="margin-left:0px;">
+					                <input name="hightArr[]" id="hightArr[]" placeholder="请输入展出亮点" type="text" autocomplete="off" class="layui-input" maxlength="50" />
+					            </div>
+				            </div>
+				            <div>
+				            	<i onclick="addIconClick()" class="layui-icon" style="font-size: 35px;">&#xe608;</i>
+				            </div>
+			            </div>  -->
+			        </div>
+				 </div>
+			</div>
+		 </div>
+	</div>
+	
+	<fieldset class="layui-elem-field layui-bg-gray">
+		<div class="layui-field-box">展台信息</div>
+	</fieldset>
+	
+	
+	<div class="layui-form-item">
+		<div class="layui-row">
+			<div class="layui-col-md6">
+		    	<div class="layui-row">
+		        		<div>
+				            <label class="layui-form-label" style="width:100px;">展台编号</label>
+				        </div>
+				        <div class="layui-col-md6">
+				            <div class="layui-input-block" style="margin-left:0px;">
+				                <select id="exhibitionSelect" name="exhibitionSelect" multiple="multiple" class="downlist">
+								<!--  	<option id="exhibitionIds[]" value='OnTop' selected>固顶</option>
+									<option id="exhibitionIds[]" value='IsElite'>推荐</option>
+									<option id="exhibitionIds[]" value='IsHot'>热门</option> -->
+								</select>
+				            </div>
+				        </div>
+				</div>
+		    </div>
+		</div>
+	</div>
+	
+	
+	<div class="layui-form-item model-form-footer"
+			style="text-align: center;">
+			<button class="layui-btn" lay-filter="btnSubmit" lay-submit>保存</button>
+			<button class="layui-btn layui-btn-primary" type="button"
+				id="btnCancel">取消</button>
+	</div>
+	</form>
+	<script type="text/html" id="contenMinus">
+	<div class="layui-row"  style="margin-bottom:5px;" id="tDiv{{ d.id }}">
+		<div class="layui-col-md6">
+			<div class="layui-input-block" style="margin-left:0px;">
+				<input name="hightArr[]" placeholder="请输入展出亮点" type="text" autocomplete="off" class="layui-input" maxlength="50" />
+			</div>
+		</div>
+		<div>
+			<i onclick="delIconClick({{ d.id }})" class="layui-icon" style="font-size: 35px;">&#x1006;</i>
+		</div>
+	</div>    		
+	</script>
+	
+	<script type="text/html" id="contenPlus">
+	<div class="layui-row"  style="margin-bottom:5px;">
+		<div class="layui-col-md6">
+			<div class="layui-input-block" style="margin-left:0px;">
+				<input name="hightArr[]" placeholder="请输入展出亮点" type="text" autocomplete="off" class="layui-input" maxlength="50" />
+			</div>
+		</div>
+		<div>
+			<i onclick="addIconClick()" class="layui-icon" style="font-size: 35px;">&#xe608;</i>
+		</div>
+	</div>    		
+	</script>
+
+	<script type="text/javascript"
+		src="../static/plugins/jquery/jquery/jquery-3.2.1.min.js"
+		th:src="@{/plugins/jquery/jquery-3.2.1.min.js}"></script>
+	<script type="text/javascript"
+		src="../static/plugins/layui/layui.all.js"
+		th:src="@{/plugins/layui/layui.all.js}"></script>
+	<script type="text/javascript"
+		src="../static/plugins/select2/js/select2.min.js"
+		th:src="@{/plugins/select2/js/select2.min.js}"></script>
+	<script type="text/javascript" src="../static/js/common/common.js#11111"
+		th:src="@{/js/common/common.js#11111}"></script>
+	<script type="text/javascript"
+		src="../../static/js/management/config/enterprise/expo.enterprise.add.js"
+		th:src="@{/js/management/config/enterprise/expo.enterprise.add.js}"></script>
+</div>
+</body>
+</html>

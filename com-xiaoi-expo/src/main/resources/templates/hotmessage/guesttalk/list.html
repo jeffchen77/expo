@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html>
+
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>EasyWeb</title>
+    <link rel="stylesheet" href="../static/plugins/layui/css/layui.css" th:href="@{/plugins/layui/css/layui.css}"/>
+    <link rel="stylesheet" href="../static/plugins/select2/css/select2.min.css" th:href="@{/plugins/select2/css/select2.min.css}"/>
+</head>
+
+<body class="layui-layout-body" style="margin-top: 20px; padding-left: 20px; padding-right: 20px;">
+<div>
+    <div class="layui-form toolbar" style="width: 100%;">
+        <div class="panel col" style="float: left;">
+            <a href="javascript:;" data-url="/management/guesttalk/add" class="layui-btn" id="addBtn">
+                <div class="panel_icon">
+                    <i class="layui-icon" data-icon="&#xe654;">&#xe654;</i>
+                    <cite>添加</cite>
+                </div>
+            </a>
+
+        </div>
+
+        <div class="layui-right" style="float: right;">
+            <input id="searchValue" class="layui-input search-input" type="text" placeholder="输入标题" style="width: auto;float: left;"/>
+            <button id="searchBtn" class="layui-btn search-btn"><i class="layui-icon">&#xe615;</i>搜索</button>
+        </div>
+    </div>
+
+    <table class="layui-table" id="table" lay-filter="table"></table>
+</div>
+
+<!-- 表单弹窗 -->
+<script type="text/html" id="addModel">
+    <form id="editForm" class="layui-form model-form" action="">
+        <input name="id" type="hidden" id="user-edit-id"/>
+        <div class="layui-form-item">
+            <div class="layui-inline" style="width: 48%;">
+                <label class="layui-form-label">标题</label>
+                <div class="layui-input-block">
+                    <input name="userName" placeholder="请输入标题" type="text" class="layui-input" required />
+                </div>
+            </div>
+            <div class="layui-inline" style="width: 48%;">
+                <label class="layui-form-label">大咖姓名</label>
+                <div class="layui-input-block" id="guest-talk-select">
+                    <select id="role-select" name="role" lay-verify="required" lay-search>
+                        <option>马化腾</option>
+                        <option>马化腾2</option>
+                        <option>马化腾1</option>
+                        <option>马化腾3</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item layui-form-text">
+            <div class="layui-inline" style="width: 48%;">
+                <label class="layui-form-label">文本域</label>
+                <div class="layui-input-block">
+                    <textarea name="desc" placeholder="请输入内容" class="layui-textarea" style="min-height: 260px;" id="guest-talk-content"></textarea>
+                </div>
+            </div>
+            <div class="layui-inline" style="width: 48%;">
+                <label class="layui-form-label" style="line-height:48px;">咨询图片</label>
+                <div class="layui-input-block">
+                    <div class="img-list">
+                        <img src="">
+                    </div>
+                    <button type="button" class="layui-btn" id="guest-talk-upload">
+                        <i class="layui-icon">&#xe67c;</i>上传图片
+                    </button>
+                </div>
+            </div>
+
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">知识链接</label>
+            <div class="layui-input-block">
+                <input name="userPhone"  type="text" class="layui-input" lay-verify="required|phone" required />
+            </div>
+        </div>
+
+        <div class="layui-form-item model-form-footer">
+            <button class="layui-btn layui-btn-primary" type="button" id="btnCancel">取消</button>
+            <button class="layui-btn" lay-filter="btnSubmit" lay-submit>保存</button>
+        </div>
+    </form>
+</script>
+<!-- 表格操作列 -->
+<script type="text/html" id="barTpl">
+    <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="view">查看</a>
+    <a class="layui-btn layui-btn-warm layui-btn-xs" lay-event="edit">修改</a>
+    <a class="layui-btn layui-btn-xs" lay-event="delete">删除</a>
+</script>
+<!-- 表格状态列 -->
+<script type="text/html" id="statusTpl">
+    <input type="checkbox" name="sex" lay-filter="statusCB" value="{{d.id}}" lay-skin="switch" lay-text="展示|隐藏" {{ d.isShowScreen == 0 ? 'checked' : '' }}>
+</script>
+<!-- 角色select模板 -->
+<script id="rolesSelect" type="text/html">
+    <option value="">-请选择-</option>
+    {{#  layui.each(d, function(index, item){ }}
+    <option value="{{ item.roleId }}">{{ item.roleName }}</option>
+    {{#  }); }}
+</script>
+
+<script type="text/javascript" src="../static/plugins/jquery/jquery/jquery-3.2.1.min.js" th:src="@{/plugins/jquery/jquery-3.2.1.min.js}"></script>
+<script type="text/javascript" src="../static/plugins/layui/layui.all.js" th:src="@{/plugins/layui/layui.all.js}"></script>
+<script type="text/javascript" src="../static/plugins/select2/js/select2.min.js" th:src="@{/plugins/select2/js/select2.min.js}"></script>
+<script type="text/javascript" src="../static/js/common/common.js" th:src="@{/js/common/common.js}"></script>
+<script type="text/javascript" src="../../../static/js/management/hotmessage/guesttalk/expo.guesttalk.list.js" th:src="@{/js/management/hotmessage/guesttalk/expo.guesttalk.list.js}"></script>
+</body>
+
+</html>
